@@ -43,6 +43,15 @@ TEST(TestTriangle, TestInsideOfC)
   EXPECT_TRUE(t.insideOfC(point1));
 }
 
+TEST(TestTriangle, TestInsideOfConC)
+{
+    ProjectLibrary::Point pp1(0, 0, 1);
+    ProjectLibrary::Point pp2(1, 0, 2);
+    ProjectLibrary::Point pp3(0, 1, 3);
+    ProjectLibrary::Triangle t(pp1,pp2,pp3);
+    ProjectLibrary::Point point3(1,1,6);
+    EXPECT_FALSE(t.insideOfC(point3));
+}
 
 TEST(TestTriangle, TestInsideOfT)
 {
