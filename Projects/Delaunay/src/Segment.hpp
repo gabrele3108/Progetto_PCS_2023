@@ -57,7 +57,7 @@ class Segment
 
 inline bool operator==(const Segment s1, const Segment s2)
 {
-    return (s1.getP1()==s2.getP1() && (s1.getP2() == s2.getP2()));
+    return ((s1.getP1()==s2.getP1()) && (s1.getP2() == s2.getP2()));
 }
 
 inline bool operator!=(const Segment s1, const Segment s2)
