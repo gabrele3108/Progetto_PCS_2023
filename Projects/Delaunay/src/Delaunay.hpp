@@ -39,6 +39,7 @@ class Delaunay
       }
 
       void manualImportPoint(const Point& p){points.push_back(p);} //Tested
+      //void manualImportSegs(const Segment s){segments.push_back(s);}
       std::vector<Point> manualExportPoints(){return triangulatedPoints;}
       std::vector<Segment*> manualExportSegs()
       {

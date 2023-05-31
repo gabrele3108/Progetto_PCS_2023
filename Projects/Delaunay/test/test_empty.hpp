@@ -56,6 +56,23 @@ TEST(TestTriangle, TestGetter)
   EXPECT_TRUE(*t.getS3() == segment31);
 }
 
+TEST(TestTriangle, TestThirdPoint)
+{
+  ProjectLibrary::Point pp1(0.0, 0.0, 0) ;
+  ProjectLibrary::Point pp2(1.0, 0.0, 1) ;
+  ProjectLibrary::Point pp3(0.0, 1.0, 2) ;
+  ProjectLibrary::Triangle t(pp1,pp2,pp3);
+  ProjectLibrary::Segment s12(pp1,pp2);
+  ProjectLibrary::Segment s23(pp2,pp3);
+  ProjectLibrary::Segment s31(pp3,pp1);
+  t.setSegment(&s12);
+  t.setSegment(&s23);
+  t.setSegment(&s31);
+  EXPECT_EQ(*t.ThirdPoint(t.getS1()),pp3);
+  EXPECT_EQ(*t.ThirdPoint(t.getS2()),pp1);
+  EXPECT_EQ(*t.ThirdPoint(t.getS3()),pp2);
+}
+
 TEST(TestTriangle, TestInsideOfC)
 {
   ProjectLibrary::Point pp1(0.0, 0.0, 1);
@@ -354,6 +371,12 @@ TEST(TestDelaunay, TestArea)
    ProjectLibrary::Point pp3(0.0, -1.0, 3);
    ProjectLibrary::Point pp4(1.0, 1.0, 4);
    ProjectLibrary::Point pp5(-1.0, -1.0, 5);
+   ProjectLibrary::Segment segment12(pp1,pp2);
+   ProjectLibrary::Segment segment23(pp2,pp3);
+   ProjectLibrary::Segment segment34(pp3,pp4);
+   ProjectLibrary::Segment segment15(pp1,pp5);
+   ProjectLibrary::Segment segment45(pp4,pp5);
+   ProjectLibrary::Segment segment24(pp2,pp4);
    ProjectLibrary::Delaunay d;
    d.manualImportPoint(pp1);
    d.manualImportPoint(pp2);
@@ -361,7 +384,23 @@ TEST(TestDelaunay, TestArea)
    d.manualImportPoint(pp4);
    d.manualImportPoint(pp5);
 
+   /*d.manualImportSegs(&segment12);
+   d.manualImportSegs(&segment23);
+   d.manualImportSegs(&segment34);
+   d.manualImportSegs(&segment15);
+   d.manualImportSegs(&segment45);
+   d.manualImportSegs(&segment24);
 
+   (d.manualExportSegs()).push_back(&segment12);
+   (d.manualExportSegs()).push_back(&segment23);
+   (d.manualExportSegs()).push_back(&segment34);
+   (d.manualExportSegs()).push_back(&segment15);
+   (d.manualExportSegs()).push_back(&segment45);
+   (d.manualExportSegs()).push_back(&segment24);
+
+
+   unsigned int k = d.getSegmentIndex(pp1,pp5);
+   EXPECT_TRUE(*d.manualExportSegs()[k] == segment15);
 }*/
 
 
