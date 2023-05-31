@@ -48,6 +48,9 @@ TEST(TestTriangle, TestGetter)
   ProjectLibrary::Segment segment12(pp1,pp2);
   ProjectLibrary::Segment segment23(pp2,pp3);
   ProjectLibrary::Segment segment31(pp3,pp1);
+  t.setSegment(&segment12);
+  t.setSegment(&segment23);
+  t.setSegment(&segment31);
   EXPECT_TRUE(*t.getS1() == segment12);
   EXPECT_TRUE(*t.getS2() == segment23);
   EXPECT_TRUE(*t.getS3() == segment31);
@@ -67,12 +70,12 @@ TEST(TestTriangle, TestInsideOfC)
 
 TEST(TestTriangle, TestInsideOfConC)
 {
-    ProjectLibrary::Point pp1(0.0, 0.0, 1);
-    ProjectLibrary::Point pp2(1.0, 0.0, 2);
-    ProjectLibrary::Point pp3(0.0, 1.0, 3);
-    ProjectLibrary::Triangle t(pp1,pp2,pp3);
-    ProjectLibrary::Point point4(1.0, 1.0, 4);
-    EXPECT_FALSE(t.insideOfC(point4));
+  ProjectLibrary::Point pp1(0.0, 0.0, 1);
+  ProjectLibrary::Point pp2(1.0, 0.0, 2);
+  ProjectLibrary::Point pp3(0.0, 1.0, 3);
+  ProjectLibrary::Triangle t(pp1,pp2,pp3);
+  ProjectLibrary::Point point4(1.0, 1.0, 4);
+  EXPECT_FALSE(t.insideOfC(point4));
 }
 
 TEST(TestTriangle, TestInsideOfT)
@@ -99,7 +102,7 @@ TEST(TestTriangle, TestInsideOfTBorder)
     EXPECT_TRUE(t.insideOfT(pp4));
 }
 
-TEST(TestTriangle, TestInsideOfTVertix)
+TEST(TestTriangle, TestInsideOfTVertex)
 {
     ProjectLibrary::Point pp1(0.0, 0.0, 0);
     ProjectLibrary::Point pp2(1.0, 0.0, 1);
@@ -111,28 +114,34 @@ TEST(TestTriangle, TestInsideOfTVertix)
     EXPECT_TRUE(t.insideOfT(pp4));
 }
 
-/*TEST(TestTriangle, TestNonAdjSeg)
+TEST(TestTriangle, TestNonAdjSeg)
 {
   ProjectLibrary::Point pp1(0.0, 0.0, 0);
   ProjectLibrary::Point pp2(1.0, 0.0, 1);
   ProjectLibrary::Point pp3(0.0, 1.0, 2);
   ProjectLibrary::Triangle t(pp1,pp2,pp3);
-  const ProjectLibrary::Segment segment12(pp1,pp2);
-  const ProjectLibrary::Segment segment23(pp2,pp3);
-  const ProjectLibrary::Segment segment31(pp3,pp1);
-  t.nonAdjSeg(*segment12, *segment23, *segment31);
-  EXPECT_TRUE((*t.getS2() == segment23) && (*t.getS2() != segment12));
-  EXPECT_TRUE((*t.getS3() == segment31) && (*t.getS3() != segment12));
-
-}*/
+  ProjectLibrary::Segment segment12(pp1,pp2);
+  ProjectLibrary::Segment segment23(pp2,pp3);
+  ProjectLibrary::Segment segment31(pp3,pp1);
+  ProjectLibrary::Segment *ss1 = nullptr;
+  ProjectLibrary::Segment *ss2 = nullptr;
+  t.setSegment(&segment12);
+  t.setSegment(&segment23);
+  t.setSegment(&segment31);
+  t.nonAdjSeg(&segment12, ss1, ss2);
+  EXPECT_TRUE(((*t.getS2() == *ss1) && (*t.getS2() != segment12)) ||
+              ((*t.getS3() == *ss1) && (*t.getS3() != segment12)));
+  EXPECT_TRUE(((*t.getS2() == *ss2) && (*t.getS2() != segment12)) ||
+              ((*t.getS3() == *ss2) && (*t.getS3() != segment12)));
+}
 
 TEST(TestTriangle, TestArea)
 {
-    ProjectLibrary::Point pp1(0, 1, 1);
-    ProjectLibrary::Point pp2(-1, 0, 2);
-    ProjectLibrary::Point pp3(0, -1, 3);
+    ProjectLibrary::Point pp1(0.0, 1.0, 1);
+    ProjectLibrary::Point pp2(-1.0, 0.0, 2);
+    ProjectLibrary::Point pp3(0.0, -1.0, 3);
     ProjectLibrary::Triangle t(pp1,pp2,pp3);
-    EXPECT_TRUE(t.Area() == 1);
+    EXPECT_TRUE(t.Area() == 1.0);
 }
 
 TEST(TestDelaunay, TestCCW)
@@ -145,15 +154,10 @@ TEST(TestDelaunay, TestCCW)
     EXPECT_TRUE(d.ccw(pp1,pp2,pp3));
     EXPECT_TRUE(d.ccw(pp2,pp3,pp1));
     EXPECT_TRUE(d.ccw(pp3,pp1,pp2));
-    /*EXPECT_TRUE(d.ccw(pp1,pp2,pp3) && d.ccw(pp2,pp3,pp1)
-     * && d.ccw(pp3,pp1,pp2)); se piace ad Ale*/
 
     EXPECT_FALSE(d.ccw(pp1,pp3,pp2));
     EXPECT_FALSE(d.ccw(pp3,pp2,pp1));
     EXPECT_FALSE(d.ccw(pp2,pp1,pp3));
-    /*EXPECT_FALSE(d.ccw(pp1,pp3,pp2) && d.ccw(pp3,pp2,pp1)
-     * && d.ccw(pp2,pp1,pp3)); se piace ad Ale*/
-
 }
 
 TEST(TestDelaunay, TestCCWColinear)
@@ -171,6 +175,195 @@ TEST(TestDelaunay, TestCCWColinear)
     EXPECT_TRUE(d.ccw(pcol3,pcol2,pcol1));
 
 }
+
+TEST(TestDelaunay, TestIntersect)
+{
+   ProjectLibrary::Point pp1(0.0, 1.0, 1);
+   ProjectLibrary::Point pp2(-1.0, 0.0, 2);
+   ProjectLibrary::Point pp3(0.0, -1.0, 3);
+   ProjectLibrary::Point pp4(1.0, 0.0, 4);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   d.manualImportPoint(pp4);
+   EXPECT_FALSE(d.intersect(pp1,pp2,pp3,pp4));
+   EXPECT_TRUE(d.intersect(pp1,pp3,pp2,pp4));
+}
+
+TEST(TestDelaunay, TestIntersectCommVertex)
+{
+   ProjectLibrary::Point pp1(0.0, 1.0, 1);
+   ProjectLibrary::Point pp2(-1.0, 0.0, 2);
+   ProjectLibrary::Point pp3(0.0, -1.0, 3);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   EXPECT_FALSE(d.intersect(pp1,pp2,pp3,pp1));
+}
+
+TEST(TestDelaunay, TestIntersectParalleliSovrapposti)
+{
+   ProjectLibrary::Point pp1(0.5, 0.0, 1);
+   ProjectLibrary::Point pp2(-0.5, 0, 2);
+   ProjectLibrary::Point pp3(0.0, 0.0, 3);
+   ProjectLibrary::Point pp4(1.0, 0.0, 4);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   d.manualImportPoint(pp4);
+   EXPECT_TRUE(d.intersect(pp1,pp2,pp3,pp4));
+}
+
+TEST(TestDelaunay, TestIntersectParalleliContenuti)
+{
+   ProjectLibrary::Point pp1(-1.0, 0.0, 1);
+   ProjectLibrary::Point pp2(1.0, 0, 2);
+   ProjectLibrary::Point pp3(-0.5, 0.0, 3);
+   ProjectLibrary::Point pp4(0.5, 0.0, 4);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   d.manualImportPoint(pp4);
+   EXPECT_TRUE(d.intersect(pp1,pp2,pp3,pp4));
+}
+
+TEST(TestDelaunay, TestIntersectParalleliStaccati)
+{
+   ProjectLibrary::Point pp1(-1.0, 0.0, 1);
+   ProjectLibrary::Point pp2(-0.5, 0.0, 2);
+   ProjectLibrary::Point pp3(0.5, 0.0, 3);
+   ProjectLibrary::Point pp4(1.0, 0.0, 4);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   d.manualImportPoint(pp4);
+   EXPECT_FALSE(d.intersect(pp1,pp2,pp3,pp4));
+}
+
+TEST(TestDelaunay, TestIntersectParalleliPuntoComune)
+{
+   ProjectLibrary::Point pp1(0.5, 0.0, 1);
+   ProjectLibrary::Point pp2(-0.5, 0.0, 2);
+   ProjectLibrary::Point pp3(0.0, 0.0, 3);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   EXPECT_FALSE(d.intersect(pp1,pp3,pp3,pp2));
+}
+
+TEST(TestDelaunay, TestIntersectParalleliVerticeComune)
+{
+   ProjectLibrary::Point pp1(0.5, 0.0, 1);
+   ProjectLibrary::Point pp2(1.0, 0.0, 2);
+   ProjectLibrary::Point pp3(0.0, 0.0, 3);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   EXPECT_TRUE(d.intersect(pp1,pp3,pp3,pp2));
+}
+
+TEST(TestDelaunay, TestIntersectVerticaliSovrapposti)
+{
+   ProjectLibrary::Point pp1(0.0, 0.5, 1);
+   ProjectLibrary::Point pp2(0.0, -0.5, 2);
+   ProjectLibrary::Point pp3(0.0, 0.0, 3);
+   ProjectLibrary::Point pp4(0.0, 1.0, 4);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   d.manualImportPoint(pp4);
+   EXPECT_TRUE(d.intersect(pp1,pp2,pp3,pp4));
+}
+
+TEST(TestDelaunay, TestIntersectVerticaliContenuti)
+{
+   ProjectLibrary::Point pp1(0.0, -1.0, 1);
+   ProjectLibrary::Point pp2(0.0, 1.0, 2);
+   ProjectLibrary::Point pp3(0.0, -0.5, 3);
+   ProjectLibrary::Point pp4(0.0, 0.5, 4);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   d.manualImportPoint(pp4);
+   EXPECT_TRUE(d.intersect(pp1,pp2,pp3,pp4));
+}
+
+TEST(TestDelaunay, TestIntersectVerticaliStaccati)
+{
+   ProjectLibrary::Point pp1(0.0, -1.0, 1);
+   ProjectLibrary::Point pp2(0.0, -0.5, 2);
+   ProjectLibrary::Point pp3(0.0, 0.5, 3);
+   ProjectLibrary::Point pp4(0.0, 1.0, 4);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   d.manualImportPoint(pp4);
+   EXPECT_FALSE(d.intersect(pp1,pp2,pp3,pp4));
+}
+
+TEST(TestDelaunay, TestIntersectVerticaliPuntoComune)
+{
+   ProjectLibrary::Point pp1(0.0, 0.5, 1);
+   ProjectLibrary::Point pp2(0.0, -0.5, 2);
+   ProjectLibrary::Point pp3(0.0, 0.0, 3);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   EXPECT_FALSE(d.intersect(pp1,pp3,pp3,pp2));
+}
+
+TEST(TestDelaunay, TestIntersectVerticaliVerticeComune)
+{
+   ProjectLibrary::Point pp1(0.0, 0.5, 1);
+   ProjectLibrary::Point pp2(0.0, 1.0, 2);
+   ProjectLibrary::Point pp3(0.0, 0.0, 3);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   EXPECT_TRUE(d.intersect(pp1,pp3,pp3,pp2));
+}
+
+TEST(TestDelaunay, TestArea)
+{
+    ProjectLibrary::Point pp1(0.0, 1.0, 1);
+    ProjectLibrary::Point pp2(-1.0, 0.0, 2);
+    ProjectLibrary::Point pp3(0.0, -1.0, 3);
+    ProjectLibrary::Delaunay d;
+    d.manualImportPoint(pp1);
+    d.manualImportPoint(pp2);
+    d.manualImportPoint(pp3);
+    EXPECT_TRUE(d.Area(pp1,pp2,pp3) == 1);
+}
+
+/*TEST(TestDelauney, TestGetSegmentIndex)
+{
+   ProjectLibrary::Point pp1(0.0, 1.0, 1);
+   ProjectLibrary::Point pp2(-1.0, 0.0, 2);
+   ProjectLibrary::Point pp3(0.0, -1.0, 3);
+   ProjectLibrary::Point pp4(1.0, 1.0, 4);
+   ProjectLibrary::Point pp5(-1.0, -1.0, 5);
+   ProjectLibrary::Delaunay d;
+   d.manualImportPoint(pp1);
+   d.manualImportPoint(pp2);
+   d.manualImportPoint(pp3);
+   d.manualImportPoint(pp4);
+   d.manualImportPoint(pp5);
+
+
+}*/
+
 
 
 
