@@ -17,9 +17,6 @@ class Point
     ///Id. Per ora c'è ma a me sembra piuttosto superfluo
     int id;
 
-    ///Vettore dei punti a cui è connesso.
-    std::vector<Point> partOfSegment;
-
 
   public:
 
@@ -30,15 +27,6 @@ class Point
 
     /// Costruttore
     Point(const double& x = 0.0, const double& y = 0.0, const int& id = 0);
-
-    /// Funzione che connette i punti (genera segmenti). Va chiamata due volte per connettere due punti
-    void connect(Point& p);
-
-    /// Funzione per ricavare i punti a cui è connesso p
-    std::vector<Point> connected() const{return partOfSegment;}
-
-    /// Funzione che mi dice se due punti sono connessi
-    bool isConnected(Point& p);
 
     string Show() const
     {

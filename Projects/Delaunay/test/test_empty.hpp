@@ -46,8 +46,11 @@ TEST(TestTriangle, TestGetter)
   ProjectLibrary::Point pp3(0.0, 1.0, 3) ;
   ProjectLibrary::Triangle t(pp1,pp2,pp3);
   ProjectLibrary::Segment segment12(pp1,pp2);
+  t.setS1(&segment12);
   ProjectLibrary::Segment segment23(pp2,pp3);
+  t.setS2(&segment23);
   ProjectLibrary::Segment segment31(pp3,pp1);
+  t.setS3(&segment31);
   EXPECT_TRUE(*t.getS1() == segment12);
   EXPECT_TRUE(*t.getS2() == segment23);
   EXPECT_TRUE(*t.getS3() == segment31);
@@ -99,7 +102,7 @@ TEST(TestTriangle, TestInsideOfTBorder)
     EXPECT_TRUE(t.insideOfT(pp4));
 }
 
-TEST(TestTriangle, TestInsideOfTVertix)
+TEST(TestTriangle, TestInsideOfTVertex)
 {
     ProjectLibrary::Point pp1(0.0, 0.0, 0);
     ProjectLibrary::Point pp2(1.0, 0.0, 1);
@@ -145,14 +148,10 @@ TEST(TestDelaunay, TestCCW)
     EXPECT_TRUE(d.ccw(pp1,pp2,pp3));
     EXPECT_TRUE(d.ccw(pp2,pp3,pp1));
     EXPECT_TRUE(d.ccw(pp3,pp1,pp2));
-    /*EXPECT_TRUE(d.ccw(pp1,pp2,pp3) && d.ccw(pp2,pp3,pp1)
-     * && d.ccw(pp3,pp1,pp2)); se piace ad Ale*/
 
     EXPECT_FALSE(d.ccw(pp1,pp3,pp2));
     EXPECT_FALSE(d.ccw(pp3,pp2,pp1));
     EXPECT_FALSE(d.ccw(pp2,pp1,pp3));
-    /*EXPECT_FALSE(d.ccw(pp1,pp3,pp2) && d.ccw(pp3,pp2,pp1)
-     * && d.ccw(pp2,pp1,pp3)); se piace ad Ale*/
 
 }
 
