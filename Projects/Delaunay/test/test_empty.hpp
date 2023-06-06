@@ -46,17 +46,11 @@ TEST(TestTriangle, TestGetter)
   ProjectLibrary::Point pp3(0.0, 1.0, 3) ;
   ProjectLibrary::Triangle t(pp1,pp2,pp3);
   ProjectLibrary::Segment segment12(pp1,pp2);
-  t.setS1(&segment12);
   ProjectLibrary::Segment segment23(pp2,pp3);
-  t.setS2(&segment23);
   ProjectLibrary::Segment segment31(pp3,pp1);
-<<<<<<< HEAD
-  t.setS3(&segment31);
-=======
   t.setSegment(&segment12);
   t.setSegment(&segment23);
   t.setSegment(&segment31);
->>>>>>> 1aad896841fa7adde99be503850ce87bb2da282b
   EXPECT_TRUE(*t.getS1() == segment12);
   EXPECT_TRUE(*t.getS2() == segment23);
   EXPECT_TRUE(*t.getS3() == segment31);
@@ -181,10 +175,6 @@ TEST(TestDelaunay, TestCCW)
     EXPECT_FALSE(d.ccw(pp1,pp3,pp2));
     EXPECT_FALSE(d.ccw(pp3,pp2,pp1));
     EXPECT_FALSE(d.ccw(pp2,pp1,pp3));
-<<<<<<< HEAD
-
-=======
->>>>>>> 1aad896841fa7adde99be503850ce87bb2da282b
 }
 
 TEST(TestDelaunay, TestCCWColinear)
