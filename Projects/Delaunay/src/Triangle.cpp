@@ -25,12 +25,12 @@ bool Triangle::insideOfC(Point p)
     Point tmp2 = this->p2;
     Point tmp3 = this->p3;
     // Introducendo queste variabili si risparmiano 6 calcoli!
-    double adx = tmp1.getX()-p.getX();
-    double ady = tmp1.getY()-p.getY();
-    double bdx = tmp2.getX()-p.getX();
-    double bdy = tmp2.getY()-p.getY();
-    double cdx = tmp3.getX()-p.getX();
-    double cdy = tmp3.getY()-p.getY();
+    double adx = tmp1.x-p.x;
+    double ady = tmp1.y-p.y;
+    double bdx = tmp2.x-p.x;
+    double bdy = tmp2.y-p.y;
+    double cdx = tmp3.x-p.x;
+    double cdy = tmp3.y-p.y;
     Matrix3d check {
         {adx,ady,(pow(adx,2)+pow(ady,2))},
         {bdx,bdy,(pow(bdx,2)+pow(bdy,2))},
@@ -52,7 +52,7 @@ Triangle::Triangle():
 
 void Triangle::setSegment(Segment *s)
 {
-    std::vector<Point> tmp =std::vector<Point>({(*s).getP2(),(*s).getP1()});
+    std::vector<Point> tmp =std::vector<Point>({s->p2,s->p1});
     bool hasP1 = (std::find(tmp.begin(),tmp.end(), p1) != tmp.end());
     bool hasP2 = (std::find(tmp.begin(),tmp.end(), p2) != tmp.end());
     bool hasP3 = (std::find(tmp.begin(),tmp.end(), p3) != tmp.end());
@@ -78,9 +78,11 @@ void Triangle::nonAdjSeg(const Segment* adjS, Segment *&ss1,Segment *&ss2)
     {ss1 = segs[0]; ss2 = segs[1];}
 }
 
-double Triangle::Area()
+string Triangle::Show()
 {
-    return 0.5*(p1.getX()*p2.getY()+p2.getX()*p3.getY()+p3.getX()*p1.getY()-p2.getX()*p1.getY()-p3.getX()*p2.getY()-p1.getX()*p3.getY());
+    stringstream converter;
+    converter << "This triangle is made of the following 3 points:\n" << "p1: " << p1.Show() << "\n" << "p2: " << p2.Show()<< "\n" << "p3: " << p3.Show() << endl;
+    return converter.str();
 }
 
 }

@@ -16,13 +16,11 @@ namespace ProjectLibrary
 class Delaunay
   {
     private:
-      std::vector<Triangle*> triangles;
-      std::vector<Segment*> segments; //Utile per l'export
       unsigned int numPoints;
 
-
-
     public:
+      std::vector<Triangle*> triangles;
+      std::vector<Segment*> segments; //Utile per l'export
       std::vector<Point> points;
       std::vector<Point> triangulatedPoints;
 
@@ -54,23 +52,9 @@ class Delaunay
         else{return points[points.size()];}
       }
 
-
       /// Questa funzione trova il triangolo di area massima tra tutti i punti in points
 
       void maxAreaTriangle(); //Tested
-
-
-      /// Le seguenti due funzioni servono per verificare se il segmento composto da p1 e p2
-      /// interseca quello composto da p3 e p4
-
-      bool ccw(const Point &p1, const Point &p2, const Point &p3);
-      bool intersect(const Point& p1, const Point& p2, const Point& p3, const Point& p4);
-
-      /// Il metodo Area() è in Delaunay perchè in questo modo non è necessario creare triangoli
-      /// superflui per controllarne l'area
-
-      double Area(const Point &p1, const Point &p2, const Point &p3)
-      {return 0.5*(p1.getX()*p2.getY()+p2.getX()*p3.getY()+p3.getX()*p1.getY()-p2.getX()*p1.getY()-p3.getX()*p2.getY()-p1.getX()*p3.getY());}
 
       /// Funzione "principale". Si occupa di generare la triangolazione di delauney a partire da un vettore di punti
 
@@ -95,9 +79,13 @@ class Delaunay
 
       bool exportSegments(const string& path);
 
+      /// Amicizie
+
 
 
 };
+
+
 }
 
 #endif // __EMPTY_H

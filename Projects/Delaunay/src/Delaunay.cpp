@@ -5,27 +5,6 @@ using namespace Eigen;
 namespace ProjectLibrary
 {
 
-bool Delaunay::ccw(const Point&  p1, const Point& p2, const Point& p3){
-    return ((p3.getY()-p1.getY())*(p2.getX()-p1.getX())>=(p2.getY()-p1.getY())*((p3.getX()-p1.getX())));
-}
-
-bool Delaunay::intersect(const Point &p1, const Point &p2, const Point &p3, const Point &p4)
-{
-    if (Area(p1,p2,p3) == 0 && Area(p1,p2,p4) == 0 && Area(p1,p3,p4) == 0 && Area(p2,p3,p4) == 0)
-    {
-        /// Se entro qui, i 4 punti sono colineari. Ho molteplici casi
-
-        Point ls1 = (p1>p2?p2:p1);
-        Point rs1 = (p1>p2?p1:p2);
-        Point ls2 = (p3>p4?p4:p3);
-        Point rs2 = (p3>p4?p3:p4);
-        if ((rs1>ls2 && ls1 <= ls2) || (ls2>rs1 && ls2 <= ls1)) {return true;}
-        if ((rs1 <= ls2) || rs2 <= ls1) {return false;}
-
-    }
-    return (ccw(p1,p3,p4) != ccw(p2,p3,p4)) && (ccw(p1,p2,p3) != ccw(p1,p2,p4));
-}
-
 // Brute force. Riscrivi usando
 // https://stackoverflow.com/questions/1621364/how-to-find-largest-triangle-in-convex-hull-aside-from-brute-force-search/44335834#44335834
 void Delaunay::maxAreaTriangle(){
@@ -49,9 +28,9 @@ void Delaunay::maxAreaTriangle(){
     /// Costruzione dell'oggetto triangolo e degli oggetti segmento
 
     Triangle *maxT = new Triangle(points[bestIds[0]],points[bestIds[1]],points[bestIds[2]]);
-    Segment *s1 = new Segment(maxT->getP1(),maxT->getP2());
-    Segment *s2 = new Segment(maxT->getP2(),maxT->getP3());
-    Segment *s3 = new Segment(maxT->getP3(),maxT->getP1());
+    Segment *s1 = new Segment(maxT->p1,maxT->p2);
+    Segment *s2 = new Segment(maxT->p2,maxT->p3);
+    Segment *s3 = new Segment(maxT->p3,maxT->p1);
 
     maxT->setS1(s1);maxT->setS2(s2);maxT->setS3(s3);
     s1->connectTriangle(maxT);s2->connectTriangle(maxT);s3->connectTriangle(maxT);
@@ -62,9 +41,9 @@ void Delaunay::maxAreaTriangle(){
 
     triangles.push_back(maxT);
 
-    triangulatedPoints.push_back(maxT->getP1());
-    triangulatedPoints.push_back(maxT->getP2());
-    triangulatedPoints.push_back(maxT->getP3());
+    triangulatedPoints.push_back(maxT->p1);
+    triangulatedPoints.push_back(maxT->p2);
+    triangulatedPoints.push_back(maxT->p3);
 
     points.erase(points.begin() + bestIds[0]);
     points.erase(points.begin() + bestIds[1]-1);
@@ -141,9 +120,9 @@ bool Delaunay::exportPoints(const string& outputFilePath){
               converterID.str("");
               converterX.str("");
               converterY.str(""); //non so se sia necessario, sembra funzionare anche senza.
-              converterID<<triangulatedPoints[i].getID();
-              converterX<<triangulatedPoints[i].getX();
-              converterY<<triangulatedPoints[i].getY();
+              converterID<<triangulatedPoints[i].id;
+              converterX<<triangulatedPoints[i].x;
+              converterY<<triangulatedPoints[i].y;
               file<<converterID.str()<<";"<<converterX.str()<<";"<<converterY.str()<<endl;
           }
 
@@ -171,11 +150,11 @@ bool Delaunay::exportPoints(const string& outputFilePath){
               converterY1.str("");
               converterY2.str("");
               converterC.str("");
-              converterX1<<s->getP1().getX();
-              converterY1<<s->getP1().getY();
-              converterX2<<s->getP2().getX();
-              converterY2<<s->getP2().getY();
-              converterC<<s->getC();
+              converterX1<<s->p1.x;
+              converterY1<<s->p1.y;
+              converterX2<<s->p2.x;
+              converterY2<<s->p2.y;
+              converterC<<s->c;
               file<<converterX1.str()<<";"<<converterY1.str()<<";"<<converterX2.str()<<";"<<converterY2.str()<<";"<<converterC.str()<<endl;
           }
           file.close();
@@ -222,7 +201,6 @@ void Delaunay::triangulate(){
         /// Aggiunta di un nuovo punto alla triangolazione
 
         for (unsigned i = 0; i < numPoints-3; i++){
-            cout << "il punto" << i << "inizia il suo percorso" << endl;
             /// queue conterrà i segmenti su cui controllare i flip. Il check dei flip finirà quando queue tornerà vuota
 
             std::queue<Segment*> queue;
@@ -243,7 +221,7 @@ void Delaunay::triangulate(){
                     check = false;
                     while (sC<3 && !onSegment)
                     {
-                        if (Area(triangles[j]->segs[sC]->getP1(),triangles[j]->segs[sC]->getP2(),points[i]) == 0)
+                        if (Area(triangles[j]->segs[sC]->p1,triangles[j]->segs[sC]->p2,points[i]) == 0)
                         {onSegment = true;}
                         else{sC++;};
                     }
@@ -251,7 +229,7 @@ void Delaunay::triangulate(){
                     {
 
                         currentS = triangles[j]->segs[sC];
-                        if (currentS->getC() == 1)
+                        if (currentS->c == 1)
                         {onExtSeg = true;}
                     }
                 }
@@ -269,22 +247,22 @@ void Delaunay::triangulate(){
                 /// Inizio creando i segmenti ed i triangoli che non esistono ancora:
 
 
-                Segment *newS1 = new Segment(points[i],triangles[j]->getP1()); // Connette p1 e p
-                Segment *newS2 = new Segment(points[i],triangles[j]->getP2()); // Connette p2 e p
-                Segment *newS3 = new Segment(points[i],triangles[j]->getP3()); // Connette p3 e p
+                Segment *newS1 = new Segment(points[i],triangles[j]->p1); // Connette p1 e p
+                Segment *newS2 = new Segment(points[i],triangles[j]->p2); // Connette p2 e p
+                Segment *newS3 = new Segment(points[i],triangles[j]->p3); // Connette p3 e p
 
 
-                Triangle *newT1 = new Triangle(triangles[j]->getP1(),triangles[j]->getP2(),points[i]); // p1, p2, p
-                Triangle *newT2 = new Triangle(triangles[j]->getP2(),triangles[j]->getP3(),points[i]); // p2, p3, p
-                Triangle *newT3 = new Triangle(triangles[j]->getP3(),triangles[j]->getP1(),points[i]); // p3, p1, p
+                Triangle *newT1 = new Triangle(triangles[j]->p1,triangles[j]->p2,points[i]); // p1, p2, p
+                Triangle *newT2 = new Triangle(triangles[j]->p2,triangles[j]->p3,points[i]); // p2, p3, p
+                Triangle *newT3 = new Triangle(triangles[j]->p3,triangles[j]->p1,points[i]); // p3, p1, p
 
                 /// Recupero i segmenti "esterni" ed elimino il triangolo da essi.
                 /// Questa cosa potrei farla in un distruttore nella classe triangolo
 
 
-                Segment *s1 = triangles[j]->getS1(); // Connette p1 e p2
-                Segment *s2 = triangles[j]->getS2(); // Connette p2 e p3
-                Segment *s3 = triangles[j]->getS3(); // Connette p3 e p1
+                Segment *s1 = triangles[j]->segs[0]; // Connette p1 e p2
+                Segment *s2 = triangles[j]->segs[1]; // Connette p2 e p3
+                Segment *s3 = triangles[j]->segs[2]; // Connette p3 e p1
 
                 s1->disconnectTriangle(triangles[j]);
                 s2->disconnectTriangle(triangles[j]);
@@ -323,28 +301,15 @@ void Delaunay::triangulate(){
 
                 /// Aggiungo i tre nuovi triangoli alla mesh
 
-                if (newT1->Area()==0)
-                {
-                    cout << "problema" << endl;
-                }
-                if (newT2->Area()==0)
-                {
-                    cout << "problema" << endl;
-                }
-                if (newT3->Area()==0)
-                {
-                    cout << "problema" << endl;
-                }
-
                 triangles.push_back(newT1);
                 triangles.push_back(newT2);
                 triangles.push_back(newT3);
 
                 /// La seconda cosa da fare è salvare i segmenti che andranno controllati in Delaunay
 
-                if (triangles[j]->getS1()->getC()==2){queue.push(triangles[j]->getS1());}
-                if (triangles[j]->getS2()->getC()==2){queue.push(triangles[j]->getS2());}
-                if (triangles[j]->getS3()->getC()==2){queue.push(triangles[j]->getS3());}
+                if (triangles[j]->segs[0]->c==2){queue.push(triangles[j]->segs[0]);}
+                if (triangles[j]->segs[1]->c==2){queue.push(triangles[j]->segs[1]);}
+                if (triangles[j]->segs[2]->c==2){queue.push(triangles[j]->segs[2]);}
 
                 /// L'ultima cosa da fare è eliminare il triangolo che contiene il punto
                 /// dalla triangolazione
@@ -384,15 +349,15 @@ void Delaunay::triangulate(){
 
                     bool found = false;
 
-                    if ((extP[extP.size()-1] == currentS->getP1() || extP[extP.size()-1] == currentS ->getP2()) &&
-                         (extP[0] == currentS->getP1()||extP[0] == currentS->getP2()))
+                    if ((extP[extP.size()-1] == currentS->p1 || extP[extP.size()-1] == currentS ->p2) &&
+                         (extP[0] == currentS->p1||extP[0] == currentS->p2))
                     {
                         firstInd = extP.size()-1;
                         found = true;
                     }
                     while (!found)
                     {
-                        if (extP[firstInd] == currentS->getP1() || extP[firstInd] == currentS->getP2())
+                        if (extP[firstInd] == currentS->p1 || extP[firstInd] == currentS->p2)
                         {
                             found = true;
                         }
@@ -424,8 +389,8 @@ void Delaunay::triangulate(){
                 {
                     /// Il segmento che contiene il punto è *currentS. Seleziono i due triangoli che contengono il punto
 
-                    Triangle *t1 = currentS->getAdj1();
-                    Triangle *t2 = currentS->getAdj2();
+                    Triangle *t1 = currentS->adj1;
+                    Triangle *t2 = currentS->adj2;
 
                     /// Questi due triangoli andranno distrutti, ma prima devo creare 4 nuovi segmenti: devono unire points[i]
                     /// agli estremi di currentS e ai due punti di t1 e t2 non uniti da currentS.
@@ -434,8 +399,8 @@ void Delaunay::triangulate(){
 
                     Point *tp1 = t1->ThirdPoint(currentS);
                     Point *tp2 = t2->ThirdPoint(currentS);
-                    Point sp1 = currentS->getP1();
-                    Point sp2 = currentS->getP2();
+                    Point sp1 = currentS->p1;
+                    Point sp2 = currentS->p2;
 
                     /// Recupero i 4 segmenti del quadrilatero
 
@@ -485,7 +450,7 @@ void Delaunay::triangulate(){
                     newT4->setSegment(newS4);
                     newT4->setSegment(newS2);
 
-                    if ((t1S1->getP1() == sp1 || t1S1->getP2() == sp1))
+                    if ((t1S1->p1 == sp1 || t1S1->p2 == sp1))
                     {
                         newT1->setSegment(t1S1);
                         newT2->setSegment(t1S2);
@@ -502,7 +467,7 @@ void Delaunay::triangulate(){
 
 
 
-                    if ((t2S1->getP1() == sp1 || t2S1->getP2() == sp1))
+                    if ((t2S1->p1 == sp1 || t2S1->p2 == sp1))
                     {
                         newT3->setSegment(t2S1);
                         newT4->setSegment(t2S2);
@@ -534,28 +499,12 @@ void Delaunay::triangulate(){
                     triangles.erase(std::find(triangles.begin(),triangles.end(),t2));
 
                     segments.push_back(newS1);segments.push_back(newS2);segments.push_back(newS3);segments.push_back(newS4);
-                    if (newT1->Area()==0)
-                    {
-                        cout << "problema" << endl;
-                    }
-                    if (newT2->Area()==0)
-                    {
-                        cout << "problema" << endl;
-                    }
-                    if (newT3->Area()==0)
-                    {
-                        cout << "problema" << endl;
-                    }
-                    if (newT4->Area()==0)
-                    {
-                        cout << "problema" << endl;
-                    }
                     triangles.push_back(newT1);triangles.push_back(newT2);triangles.push_back(newT3);triangles.push_back(newT4);
 
-                    if (t1S1->getC()== 2){queue.push(t1S1);}
-                    if (t1S2->getC()== 2){queue.push(t1S2);}
-                    if (t2S1->getC()== 2){queue.push(t2S1);}
-                    if (t2S2->getC()== 2){queue.push(t2S2);}
+                    if (t1S1->c== 2){queue.push(t1S1);}
+                    if (t1S2->c== 2){queue.push(t1S2);}
+                    if (t2S1->c== 2){queue.push(t2S1);}
+                    if (t2S2->c== 2){queue.push(t2S2);}
 
                 }
 
@@ -646,10 +595,6 @@ void Delaunay::triangulate(){
 
 
                     queue.push(segments[m]);
-                    if (newT->Area()==0)
-                    {
-                        cout << "problema" << endl;
-                    }
                     triangles.push_back(newT);
 
 
@@ -698,14 +643,12 @@ void Delaunay::triangulate(){
 //oppure ai segmenti esterni a cui questo viene unito. Quindi queue deve contenere esattamente questi segmenti.
 //Dopo un flip devo controllare tutti i segmenti del quadrilatero che si va a creare e che sono adiacenti ad un altro triangolo
 void Delaunay::checkDelaunay(std::queue<Segment*>& queue){
-    cout << "Inizia la queue" << endl;
     unsigned int numFlip = 0;
     while (!queue.empty())
     {
-        cout << "aaa" << endl;
         Segment *currentS = queue.front();
-        Triangle *currentAdj1 = currentS->getAdj1();
-        Triangle *currentAdj2 = currentS->getAdj2();
+        Triangle *currentAdj1 = currentS->adj1;
+        Triangle *currentAdj2 = currentS->adj2;
         Point *tP2 = currentAdj2->ThirdPoint(currentS);
         if (currentAdj1->insideOfC(*tP2))
         {
@@ -734,8 +677,8 @@ void Delaunay::checkDelaunay(std::queue<Segment*>& queue){
 
             /// Creo i due nuovi triangoli che andranno a rimpiazzare quelli attualmente adiacenti a currentS
 
-            Triangle *newT1 = new Triangle(currentS->getP1(),*tP2,*tP1);
-            Triangle *newT2 = new Triangle(currentS->getP2(),*tP1,*tP2);
+            Triangle *newT1 = new Triangle(currentS->p1,*tP2,*tP1);
+            Triangle *newT2 = new Triangle(currentS->p2,*tP1,*tP2);
 
             /// Aggiungo ai nuovi triangoli i loro segmenti e viceversa
 
@@ -743,7 +686,7 @@ void Delaunay::checkDelaunay(std::queue<Segment*>& queue){
             newT2->setSegment(newS);
 
 
-            if (currentS->getP1() == newT1S1->getP1() || currentS->getP1() == newT1S1->getP2())
+            if (currentS->p1 == newT1S1->p1 || currentS->p1 == newT1S1->p2)
             {
                 newT1->setSegment(newT1S1);
                 newT1S1->connectTriangle(newT1);
@@ -758,7 +701,7 @@ void Delaunay::checkDelaunay(std::queue<Segment*>& queue){
                 newT1S1->connectTriangle(newT2);
             }
 
-            if (currentS->getP1() == newT2S1->getP1() || currentS->getP1() == newT2S1->getP2())
+            if (currentS->p1 == newT2S1->p1 || currentS->p1 == newT2S1->p2)
             {
                 newT1->setSegment(newT2S1);
                 newT2S1->connectTriangle(newT1);
@@ -779,10 +722,10 @@ void Delaunay::checkDelaunay(std::queue<Segment*>& queue){
             /// Aggiungo alla coda da controllare per i flip i 4 segmenti appena recuperati,
             /// se questi sono connessi a più di un triangolo
 
-            if (newT1S1->getC()==2){queue.push(newT1S1);}
-            if (newT1S2->getC()==2){queue.push(newT1S2);}
-            if (newT2S1->getC()==2){queue.push(newT2S1);}
-            if (newT2S2->getC()==2){queue.push(newT2S2);}
+            if (newT1S1->c==2){queue.push(newT1S1);}
+            if (newT1S2->c==2){queue.push(newT1S2);}
+            if (newT2S1->c==2){queue.push(newT2S1);}
+            if (newT2S2->c==2){queue.push(newT2S2);}
 
             /// Devo rimuovere dai segmenti il segmento currentS e da triangles i triangoli adiacenti
 
@@ -795,7 +738,6 @@ void Delaunay::checkDelaunay(std::queue<Segment*>& queue){
             segments.push_back(newS);
             triangles.push_back(newT1);
             triangles.push_back(newT2);
-
 
         }
         queue.pop();

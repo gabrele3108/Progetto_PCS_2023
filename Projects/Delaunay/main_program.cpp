@@ -3,7 +3,7 @@
 int main()
 {
   ProjectLibrary::Delaunay mainDelaunay;
-  mainDelaunay.importMesh("C:/Users/aless/Desktop/PCS/PCS2023_Exercises/Projects/Delaunay/Dataset/Test2.csv");
+  mainDelaunay.importMesh("C:/Users/aless/Desktop/PCS/PCS2023_Exercises/Projects/Delaunay/Dataset/Test1.csv");
   //mainDelaunay.maxAreaTriangle();
 
 
