@@ -295,7 +295,7 @@ TEST(TestLibraryMethods, TestArea)
     EXPECT_TRUE(Area(pp1,pp2,pp3) == 1);
 }
 
-/*TEST(TestDelauney, TestGetSegmentIndex)
+TEST(TestDelauney, TestGetSegmentIndex)
 {
    ProjectLibrary::Point pp1(0.0, 1.0, 1);
    ProjectLibrary::Point pp2(-1.0, 0.0, 2);
@@ -309,29 +309,75 @@ TEST(TestLibraryMethods, TestArea)
    ProjectLibrary::Segment segment45(pp4,pp5);
    ProjectLibrary::Segment segment24(pp2,pp4);
    ProjectLibrary::Delaunay d;
-   d.manualImportPoint(pp1);
-   d.manualImportPoint(pp2);
-   d.manualImportPoint(pp3);
-   d.manualImportPoint(pp4);
-   d.manualImportPoint(pp5);
+   d.points.push_back(pp1);
+   d.points.push_back(pp2);
+   d.points.push_back(pp3);
+   d.points.push_back(pp4);
+   d.points.push_back(pp5);
 
-   d.manualImportSegs(&segment12);
-   d.manualImportSegs(&segment23);
-   d.manualImportSegs(&segment34);
-   d.manualImportSegs(&segment15);
-   d.manualImportSegs(&segment45);
-   d.manualImportSegs(&segment24);
-
-   (d.manualExportSegs()).push_back(&segment12);
-   (d.manualExportSegs()).push_back(&segment23);
-   (d.manualExportSegs()).push_back(&segment34);
-   (d.manualExportSegs()).push_back(&segment15);
-   (d.manualExportSegs()).push_back(&segment45);
-   (d.manualExportSegs()).push_back(&segment24);
+   d.segments.push_back(&segment12);
+   d.segments.push_back(&segment23);
+   d.segments.push_back(&segment34);
+   d.segments.push_back(&segment15);
+   d.segments.push_back(&segment45);
+   d.segments.push_back(&segment24);
 
 
    unsigned int k = d.getSegmentIndex(pp1,pp5);
-   EXPECT_TRUE(*d.manualExportSegs()[k] == segment15);
+   EXPECT_TRUE(*d.segments[k] == segment15);
+}
+
+TEST(TestLibraryMethods, TestImport)
+{
+    ProjectLibrary::Delaunay d;
+    ProjectLibrary::Point p1(0.0,0.0,0);
+    ProjectLibrary::Point p2(1.0,0.0,0);
+    ProjectLibrary::Point p3(1.0,1.0,0);
+    ProjectLibrary::Point p4(0.0,1.0,0);
+    d.importMesh("C:/Users/Gabriele/Desktop/ProjectPCS/Progetto_PCS_2023/Projects/Delaunay/Dataset/importPointsTest.csv");
+    EXPECT_TRUE(d.checkPoint(0) == p1);
+    EXPECT_TRUE(d.checkPoint(1) == p2);
+    EXPECT_TRUE(d.checkPoint(2) == p3);
+    EXPECT_TRUE(d.checkPoint(3) == p4);
+}
+
+/*TEST(TestDelaunay, TestCheckDelaunay){
+    ProjectLibrary::Delaunay d;
+    ProjectLibrary::Point *p1 = new ProjectLibrary::Point(0,0,1);
+    ProjectLibrary::Point *p2 = new ProjectLibrary::Point(1,0,2);
+    ProjectLibrary::Point *p3 = new ProjectLibrary::Point(0,4,3);
+    ProjectLibrary::Point *p4 = new ProjectLibrary::Point(0,1,4);
+
+    ProjectLibrary::Triangle *t1 = new ProjectLibrary:: Triangle (*p1,*p2,*p3);
+    ProjectLibrary::Triangle *t2 = new ProjectLibrary:: Triangle(*p1,*p3,*p4);
+
+    //ProjectLibrary::Delaunay d;
+
+    ProjectLibrary::Segment *s12 = new ProjectLibrary::Segment(*p1,*p2);
+    ProjectLibrary::Segment *s14 = new ProjectLibrary::Segment(*p1,*p4);
+    ProjectLibrary::Segment *s23 = new ProjectLibrary::Segment(*p2,*p3);
+    ProjectLibrary::Segment *s34 = new ProjectLibrary::Segment(*p3,*p4);
+    ProjectLibrary::Segment *s13 = new ProjectLibrary::Segment(*p1,*p3);
+    ProjectLibrary::Segment *s24 = new ProjectLibrary::Segment(*p2,*p4);
+
+    t1->setSegment(s12);
+    t1->setSegment(s23);
+    t1->setSegment(s13);
+
+    t2->setSegment(s13);
+    t2->setSegment(s34);
+    t2->setSegment(s14);
+
+    s24->connectTriangle(t1);
+    s24->connectTriangle(t2);
+
+    std::queue<ProjectLibrary::Segment*> q;
+
+    q.push(s13);
+
+    d.checkDelaunay(q);
+
+    EXPECT_TRUE(**d.segments.end() == *s24);
 }*/
 
 
