@@ -7,12 +7,6 @@ using namespace std;
 
 namespace ProjectLibrary{
 
-constexpr double max_tolerance(const double& x, const double& y)
-{
-  return x > y ? x : y;
-}
-
-
 class Point
 {
   private:
@@ -23,11 +17,6 @@ class Point
     ///Id. Per ora c'è ma a me sembra piuttosto superfluo
     int id;
 
-    /// Gestione tolleranze
-
-    static constexpr double geometricTol = 1.0e-12;
-    static constexpr double geometricTol_Squared = max_tolerance(Point::geometricTol * Point::geometricTol,
-                                                                 numeric_limits<double>::epsilon());
 
 
   public:
@@ -54,16 +43,9 @@ class Point
 
 };
 
-inline double normSquared(const double& x, const double& y)
-{
-  return x * x + y * y;
-}
-
 inline bool operator==(const Point& p1, const Point& p2)
 {
-  return (normSquared(p1.x - p2.x, p1.y - p2.y) <=
-          Point::geometricTol * Point::geometricTol *
-          max(normSquared(p1.x, p1.y), normSquared(p2.x, p2.y)));
+    return ( p1.x == p2.x && p1.y == p2.y);
 }
 
 inline bool operator!=(const Point& p1, const Point& p2)
@@ -73,8 +55,8 @@ inline bool operator!=(const Point& p1, const Point& p2)
 
 inline bool operator>(const Point& p1, const Point& p2)
 {
-    if (abs(p1.x-p2.x)<Point::geometricTol){return p1.y > p2.y + Point::geometricTol * max(abs(p1.y),abs(p2.y));}
-    else {return p1.x>p2.x + Point::geometricTol*max(abs(p1.x),abs(p2.x));}
+    if (p1.x==p2.x){return p1.y>p2.y;}
+    else {return p1.x>p2.x;}
 }
 
 inline bool operator<=(const Point& p1, const Point& p2)
