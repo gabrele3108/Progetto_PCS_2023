@@ -3,12 +3,14 @@ list(APPEND delaunay_headers ${CMAKE_CURRENT_SOURCE_DIR}/Point.hpp)
 list(APPEND delaunay_headers ${CMAKE_CURRENT_SOURCE_DIR}/sorting.hpp)
 list(APPEND delaunay_headers ${CMAKE_CURRENT_SOURCE_DIR}/Segment.hpp)
 list(APPEND delaunay_headers ${CMAKE_CURRENT_SOURCE_DIR}/Triangle.hpp)
+list(APPEND delaunay_headers ${CMAKE_CURRENT_SOURCE_DIR}/convexHull.hpp)
 
 
 list(APPEND delaunay_sources ${CMAKE_CURRENT_SOURCE_DIR}/Delaunay.cpp)
 list(APPEND delaunay_sources ${CMAKE_CURRENT_SOURCE_DIR}/Point.cpp)
 list(APPEND delaunay_headers ${CMAKE_CURRENT_SOURCE_DIR}/Segment.cpp)
 list(APPEND delaunay_headers ${CMAKE_CURRENT_SOURCE_DIR}/Triangle.cpp)
+list(APPEND delaunay_headers ${CMAKE_CURRENT_SOURCE_DIR}/convexHull.cpp)
 
 
 list(APPEND delaunay_includes ${CMAKE_CURRENT_SOURCE_DIR})

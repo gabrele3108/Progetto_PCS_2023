@@ -3,13 +3,13 @@
 int main()
 {
   ProjectLibrary::Delaunay mainDelaunay;
-  mainDelaunay.importMesh("C:/Users/aless/Desktop/PCS/PCS2023_Exercises/Projects/Delaunay/Dataset/Test1.csv");
+  mainDelaunay.importMesh("./Test1.csv");
   //mainDelaunay.maxAreaTriangle();
 
 
   mainDelaunay.triangulate();
-  //mainDelaunay.exportPoints("C:/Users/aless/Desktop/PCS/PCS2023_Exercises/Projects/Delaunay/Dataset/ProvaPoints.csv");
-  //mainDelaunay.exportSegments("C:/Users/aless/Desktop/PCS/PCS2023_Exercises/Projects/Delaunay/Dataset/ProvaSegs.csv");
+  mainDelaunay.exportPoints("./ProvaPoints.csv");
+  mainDelaunay.exportSegments("./ProvaSegs.csv");
 
 // del.Show()
 

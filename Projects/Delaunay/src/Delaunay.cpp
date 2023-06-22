@@ -51,6 +51,67 @@ void Delaunay::maxAreaTriangle(){
 
 }
 
+void Delaunay::maxAreaTriangleNSQ(){
+    vector<Point> hull = ConvexHull(points);
+    unsigned int hSize = hull.size();
+    unsigned int a = 0;
+    unsigned int b = 1;
+    unsigned int c = 2;
+    unsigned int bestA = 0;
+    unsigned int bestB = 1;
+    unsigned int bestC = 2;
+    double maxArea = Area(hull[a],hull[b],hull[c]);
+    bool t = true;
+    while (t)
+    {
+        while (b!=a)
+        {
+            while (Area(hull[a],hull[b],hull[(c+1)%hSize])>=Area(hull[a],hull[b],hull[c]))
+            {
+                c++;
+                c = c%hSize;
+            }
+            if (Area(hull[a],hull[b],hull[c])>=maxArea)
+            {
+                maxArea = Area(hull[a],hull[b],hull[c]);
+                bestA = a;bestB = b; bestC = c;
+            }
+            b++;
+            b = b%hSize;
+        }
+        a = (++a)%hSize;
+        b = (a+1)%hSize;
+        c = (a+2)%hSize;
+        if (a==0){t = false;}
+    }
+
+
+    /// Costruzione dell'oggetto triangolo e degli oggetti segmento
+
+    Triangle *maxT = new Triangle(hull[bestA],hull[bestB],hull[bestC]);
+    Segment *s1 = new Segment(maxT->p1,maxT->p2);
+    Segment *s2 = new Segment(maxT->p2,maxT->p3);
+    Segment *s3 = new Segment(maxT->p3,maxT->p1);
+
+    maxT->setS1(s1);maxT->setS2(s2);maxT->setS3(s3);
+    s1->connectTriangle(maxT);s2->connectTriangle(maxT);s3->connectTriangle(maxT);
+
+    /// Aggiornamento della mesh
+
+    segments.push_back(s1);segments.push_back(s2);segments.push_back(s3);
+
+    triangles.push_back(maxT);
+
+    triangulatedPoints.push_back(maxT->p1);
+    triangulatedPoints.push_back(maxT->p2);
+    triangulatedPoints.push_back(maxT->p3);
+
+    points.erase(find(points.begin(),points.end(),hull[bestA]));
+    points.erase(find(points.begin(),points.end(),hull[bestB]));
+    points.erase(find(points.begin(),points.end(),hull[bestC]));
+}
+
+
 void Delaunay::importMesh(const string& path){
     ifstream file;
 
@@ -190,7 +251,7 @@ void Delaunay::triangulate(){
 
         /// Creazione del triangolo di area massima.
 
-        maxAreaTriangle();
+        maxAreaTriangleNSQ();
 
         /// Salvo i punti "sul bordo" della triangolazione nel vettore extP.
         /// Questo vettore conterrà il convex hull dei punti aggiunti alla triangolazione

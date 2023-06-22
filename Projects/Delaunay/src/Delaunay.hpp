@@ -5,7 +5,7 @@
 #include "Eigen/Eigen"
 #include <fstream>
 #include <queue>
-#include "Triangle.hpp"
+#include "convexHull.hpp"
 
 using namespace std;
 
@@ -24,37 +24,11 @@ class Delaunay
       std::vector<Point> points;
       std::vector<Point> triangulatedPoints;
 
-      /// Funzioni utili per effettuare i test.
-      /// checkTriangle restituisce il triangolo associato ad index in triangles, oppure l'ultimo triangolo salvato
-      /// se index è maggiore della lunghezza.
-      /// Il testing di queste funzioni è "implicitamente effettuato poichè vengono utilizzate per altri test"
 
-
-      Triangle checkTriangle(unsigned int index) //Tested
-      {
-          if (index < triangles.size()){return *triangles[index];}
-          else{return *triangles[triangles.size()];}
-      }
-
-      /*void manualImportPoint(const Point& p){points.push_back(p);} //Tested
-      //void manualImportSegs(const Segment s){segments.push_back(s);}
-      std::vector<Point> manualExportPoints(){return triangulatedPoints;}*/
-      std::vector<Segment*> manualExportSegs()
-      {
-          return segments;
-      }
-      std::vector<Triangle*> manualExportTriang(){return triangles;}
-
-
-      Point checkPoint(unsigned int index)
-      {
-        if (index < points.size()){return points[index];}
-        else{return points[points.size()];}
-      }
-
-      /// Questa funzione trova il triangolo di area massima tra tutti i punti in points
+      /// Queste funzioni sono modi più o meno efficienti di trovare il triangolo di area massima tra tutti i punti in points
 
       void maxAreaTriangle(); //Tested
+      void maxAreaTriangleNSQ();
 
       /// Funzione "principale". Si occupa di generare la triangolazione di delauney a partire da un vettore di punti
 

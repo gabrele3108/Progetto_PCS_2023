@@ -1,4 +1,4 @@
-#include "Point.hpp"
+#include "Triangle.hpp"
 
 namespace ProjectLibrary{
 

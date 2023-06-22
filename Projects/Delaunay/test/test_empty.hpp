@@ -10,7 +10,7 @@ using namespace testing;
 TEST(TestPoint, TestConstruction)
 {
   ProjectLibrary::Point p = ProjectLibrary::Point(1.0, 2.0, 3) ;
-  EXPECT_EQ(p.Show(),"x: 1.0, y: 2.0, id: 3\n");
+  EXPECT_EQ(p.Show(),"x: 1, y: 2, id: 3\n");
 
 
 }
@@ -32,10 +32,7 @@ TEST(TestTriangle, TestCreateTriangle)
   EXPECT_TRUE(t1==t4);
   EXPECT_TRUE(t1==t5);
   EXPECT_TRUE(t1==t6);
-  EXPECT_TRUE(t1.Show() == "This triangle is made of the following 3 points:\n"
-                           "p1: x: -1.0, y: 0.0, id: 1\n"
-                           "p2: x: 1.0, y: 0.0, id: 2\n"
-                           "p3: x: 0.0, y: 1.0, id: 3)\n");
+  EXPECT_EQ(t1.Show(), "This triangle is made of the following 3 points:\np1: x: -1, y: 0, id: 1\n\np2: x: 1, y: 0, id: 2\n\np3: x: 0, y: 1, id: 3\n\n");
 
 }
 
@@ -334,12 +331,141 @@ TEST(TestLibraryMethods, TestImport)
     ProjectLibrary::Point p2(1.0,0.0,0);
     ProjectLibrary::Point p3(1.0,1.0,0);
     ProjectLibrary::Point p4(0.0,1.0,0);
-    d.importMesh("C:/Users/Gabriele/Desktop/ProjectPCS/Progetto_PCS_2023/Projects/Delaunay/Dataset/importPointsTest.csv");
-    EXPECT_TRUE(d.checkPoint(0) == p1);
-    EXPECT_TRUE(d.checkPoint(1) == p2);
-    EXPECT_TRUE(d.checkPoint(2) == p3);
-    EXPECT_TRUE(d.checkPoint(3) == p4);
+    d.importMesh("./importPointsTest.csv");
+    EXPECT_TRUE(d.points[0] == p1);
+    EXPECT_TRUE(d.points[1] == p2);
+    EXPECT_TRUE(d.points[2] == p3);
+    EXPECT_TRUE(d.points[3] == p4);
 }
+
+TEST(TestConvexHull, TestThreePoints){
+    ProjectLibrary::Point pp1(0.0, 1.0, 1);
+    ProjectLibrary::Point pp2(-1.0, 0.0, 2);
+    ProjectLibrary::Point pp3(0.0, -1.0, 3);
+    vector<ProjectLibrary::Point> points = {pp1,pp2,pp3};
+    vector<ProjectLibrary::Point> hull = ProjectLibrary::ConvexHull(points);
+    EXPECT_TRUE(hull.size() == 3);
+    EXPECT_TRUE(hull[0] == pp2);
+    EXPECT_TRUE(hull[1] == pp3);
+    EXPECT_TRUE(hull[2] == pp1);
+}
+
+TEST(TestConvexHull, TestXPoints)
+{
+  unsigned int numPoints = 0;
+  vector<ProjectLibrary::Point> points = {ProjectLibrary::Point(2, 2, numPoints++),
+                          ProjectLibrary::Point(2.8, 1.7, numPoints++),
+                          ProjectLibrary::Point(3, 5, numPoints++),
+                          ProjectLibrary::Point(7, 3, numPoints++),
+                          ProjectLibrary::Point(7.2, 5, numPoints++),
+                          ProjectLibrary::Point(11, 4.3, numPoints++),
+                          ProjectLibrary::Point(12, 5.2, numPoints++),
+                          ProjectLibrary::Point(14, 3, numPoints++)
+                          };
+
+  vector<ProjectLibrary::Point> convexHull = ConvexHull(points);
+  EXPECT_TRUE(convexHull.size() == 5);
+  EXPECT_TRUE(convexHull[0] == ProjectLibrary::Point(2, 2, numPoints++));
+  EXPECT_TRUE(convexHull[1] == ProjectLibrary::Point(2.8, 1.7, numPoints++));
+  EXPECT_TRUE(convexHull[2] == ProjectLibrary::Point(14, 3, numPoints++));
+  EXPECT_TRUE(convexHull[3] == ProjectLibrary::Point(12, 5.2, numPoints++));
+  EXPECT_TRUE(convexHull[4] == ProjectLibrary::Point(3, 5, numPoints++));
+
+}
+
+
+TEST(TestConvexHull, TestVerticalPoints)
+{
+  unsigned int numPoints = 0;
+  vector<ProjectLibrary::Point> points = {ProjectLibrary::Point(0, 2, numPoints++),
+                          ProjectLibrary::Point(0, 1.7, numPoints++),
+                          ProjectLibrary::Point(0, 5, numPoints++),
+                          ProjectLibrary::Point(0, 3, numPoints++),
+                          ProjectLibrary::Point(0, 6, numPoints++),
+                          ProjectLibrary::Point(0, 4.3, numPoints++),
+                          ProjectLibrary::Point(0, 5.2, numPoints++),
+                          ProjectLibrary::Point(0, 3.1, numPoints++)
+                          };
+
+  vector<ProjectLibrary::Point> convexHull = ConvexHull(points);
+  EXPECT_TRUE(convexHull.size() == 8);
+  EXPECT_TRUE(convexHull[1] == ProjectLibrary::Point(0, 6, numPoints++));
+  EXPECT_TRUE(convexHull[2] == ProjectLibrary::Point(0, 5.2, numPoints++));
+  EXPECT_TRUE(convexHull[3] == ProjectLibrary::Point(0, 5, numPoints++));
+  EXPECT_TRUE(convexHull[4] == ProjectLibrary::Point(0, 4.3, numPoints++));
+  EXPECT_TRUE(convexHull[5] == ProjectLibrary::Point(0, 3.1, numPoints++));
+  EXPECT_TRUE(convexHull[6] == ProjectLibrary::Point(0, 3, numPoints++));
+  EXPECT_TRUE(convexHull[7] == ProjectLibrary::Point(0, 2, numPoints++));
+  EXPECT_TRUE(convexHull[0] == ProjectLibrary::Point(0, 1.7, numPoints++));
+
+}
+
+TEST(TestConvexHull, TestSmallSquare)
+{
+  unsigned int numPoints = 0;
+  vector<ProjectLibrary::Point> points = {ProjectLibrary::Point(0, 1, numPoints++),
+                          ProjectLibrary::Point(1, 1, numPoints++),
+                          ProjectLibrary::Point(1, 0, numPoints++),
+                          ProjectLibrary::Point(0, 0, numPoints++),
+                          ProjectLibrary::Point(0, 0.5, numPoints++),
+                          ProjectLibrary::Point(1, 0.5, numPoints++),
+                          ProjectLibrary::Point(0.5, 0, numPoints++),
+                          ProjectLibrary::Point(0.5, 1, numPoints++)
+                          };
+
+  vector<ProjectLibrary::Point> convexHull = ConvexHull(points);
+  EXPECT_TRUE(convexHull.size() == 8);
+  EXPECT_TRUE(convexHull[0] == ProjectLibrary::Point(0, 0, numPoints++));
+  EXPECT_TRUE(convexHull[1] == ProjectLibrary::Point(0.5, 0, numPoints++));
+  EXPECT_TRUE(convexHull[2] == ProjectLibrary::Point(1, 0, numPoints++));
+  EXPECT_TRUE(convexHull[3] == ProjectLibrary::Point(1, 0.5, numPoints++));
+  EXPECT_TRUE(convexHull[4] == ProjectLibrary::Point(1, 1, numPoints++));
+  EXPECT_TRUE(convexHull[5] == ProjectLibrary::Point(0.5, 1, numPoints++));
+  EXPECT_TRUE(convexHull[6] == ProjectLibrary::Point(0, 1, numPoints++));
+  EXPECT_TRUE(convexHull[7] == ProjectLibrary::Point(0, 0.5, numPoints++));
+
+}
+
+TEST(TestDelaunay, TestMaxAreaTriangle)
+{
+    ProjectLibrary::Point pp1(0, 1, 1);
+    ProjectLibrary::Point pp2(-1, 0, 2);
+    ProjectLibrary::Point pp3(0, -1, 3);
+    ProjectLibrary::Point pp4(1, 0, 4);
+    ProjectLibrary::Point pp5(1, 1, 5);
+    ProjectLibrary::Delaunay d;
+    d.points.push_back(pp1);
+    d.points.push_back(pp2);
+    d.points.push_back(pp3);
+    d.points.push_back(pp4);
+    d.points.push_back(pp5);
+    d.maxAreaTriangle();
+    ProjectLibrary::Triangle t(pp2,pp3,pp5);
+
+
+    EXPECT_TRUE(*d.triangles[0] == t);
+}
+
+TEST(TestDelaunay, TestMaxAreaTriangleNSQ)
+{
+    ProjectLibrary::Point pp1(0, 1, 1);
+    ProjectLibrary::Point pp2(-1, 0, 2);
+    ProjectLibrary::Point pp3(0, -1, 3);
+    ProjectLibrary::Point pp4(1, 0, 4);
+    ProjectLibrary::Point pp5(1, 1, 5);
+    ProjectLibrary::Delaunay d;
+    d.points.push_back(pp1);
+    d.points.push_back(pp2);
+    d.points.push_back(pp3);
+    d.points.push_back(pp4);
+    d.points.push_back(pp5);
+    d.maxAreaTriangleNSQ();
+    ProjectLibrary::Triangle t(pp2,pp3,pp5);
+
+
+    EXPECT_TRUE(*d.triangles[0] == t);
+}
+
 
 /*TEST(TestDelaunay, TestCheckDelaunay){
     ProjectLibrary::Delaunay d;
@@ -394,26 +520,6 @@ TEST(TestLibraryMethods, TestImport)
     d.manualImportPoint(pp3);
     EXPECT_TRUE(d.Area(pp1,pp2,pp3) == 1);
 
-}
-
-TEST(TestLibraryMethods, TestMaxAreaTriangle)
-{
-    ProjectLibrary::Point pp1(0, 1, 1);
-    ProjectLibrary::Point pp2(-1, 0, 2);
-    ProjectLibrary::Point pp3(0, -1, 3);
-    ProjectLibrary::Point pp4(1, 0, 4);
-    ProjectLibrary::Point pp5(1, 1, 5);
-    ProjectLibrary::Delaunay d;
-    d.manualImportPoint(pp1);
-    d.manualImportPoint(pp2);
-    d.manualImportPoint(pp3);
-    d.manualImportPoint(pp4);
-    d.manualImportPoint(pp5);
-    d.maxAreaTriangle();
-    ProjectLibrary::Triangle t(pp2,pp3,pp5);
-
-
-    EXPECT_TRUE(d.checkTriangle(0) == t);
 }
 
 

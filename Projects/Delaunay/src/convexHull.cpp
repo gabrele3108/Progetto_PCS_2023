@@ -13,17 +13,13 @@ void MergeHulls(vector<Point>& sortedV,
     bool inconclusive1 = false;
     while (checkUBridge && !inconclusive1)
     {
-        if (ccw(*uppLeft,*uppRight,*uppLeft->succ))
+        if (ccwHull(*uppLeft,*uppRight,*uppLeft->succ))
         {uppLeft = uppLeft->succ;}
-        else if (ccw(*uppLeft,*uppRight,*uppRight->prec))
+        else if (ccwHull(*uppLeft,*uppRight,*uppRight->prec))
         {uppRight = uppRight->prec;}
         else
         {
             checkUBridge = false;
-        }
-        if (*uppLeft == sortedV[cx] && *uppRight == sortedV[cx+1] && checkUBridge)
-        {
-            inconclusive1 = true;
         }
     }
 
@@ -35,18 +31,20 @@ void MergeHulls(vector<Point>& sortedV,
 
     while (checkLBridge && !inconclusive2)
     {
-        if (!ccw(*lowLeft,*lowRight,*lowLeft->prec))
+        if (!ccwHull(*lowLeft,*lowRight,*lowLeft->prec))
         {lowLeft = lowLeft->prec;}
-        else if (!ccw(*lowLeft,*lowRight,*lowRight->succ))
+        else if (!ccwHull(*lowLeft,*lowRight,*lowRight->succ))
         {lowRight = lowRight->succ;}
         else
         {
             checkLBridge = false;
         }
-        if (*lowLeft == sortedV[cx] && *lowRight == sortedV[cx+1] && checkLBridge)
+        /*if (*lowLeft == sortedV[cx] && *lowRight == sortedV[cx+1] && checkLBridge)
         {
             inconclusive2 = true;
-        }
+            *lowLeft = sortedV[cx];
+            *lowRight = sortedV[cx+1];
+        }*/
     }
 
     if (inconclusive1 && inconclusive2)
@@ -114,7 +112,7 @@ vector<Point> ConvexHull(vector<Point> points)
   hull.reserve(points.size());
   unsigned int i = 0;
   while (*hull[i].succ != points[0])
-  {hull.push_back(*hull[i++].succ);}
+  {hull.push_back(*hull[i++].succ);cout<<hull[i].Show()<<endl;}
   return hull;
 }
 

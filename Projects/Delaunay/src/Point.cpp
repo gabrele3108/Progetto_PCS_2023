@@ -17,10 +17,17 @@ string Point::Show()
 }
 
 double Area(const Point& p1, const Point& p2, const Point& p3)
-{return 0.5*(p1.x * p2.y + p2.x * p3.y + p3.x * p1.y - p2.x * p1.y - p3.x * p2.y - p1.x * p3.y);}
+{return 0.5*abs(p1.x * p2.y + p2.x * p3.y + p3.x * p1.y - p2.x * p1.y - p3.x * p2.y - p1.x * p3.y);}
 
 bool ccw(const Point&  p1, const Point& p2, const Point& p3){
     return ((p3.y-p1.y)*(p2.x-p1.x)>=(p2.y-p1.y)*((p3.x-p1.x)));
+    }
+
+bool ccwHull(const Point &p1, const Point &p2, const Point &p3)
+{
+    double d = ((p3.y-p1.y)*(p2.x-p1.x)-(p2.y-p1.y)*((p3.x-p1.x)));
+    if (d != 0) {return d>0;}
+    else{ return (p3<=p2 && p3 > p1);}
 }
 
 bool intersect(const Point &p1, const Point &p2, const Point &p3, const Point &p4)
