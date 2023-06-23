@@ -5,7 +5,7 @@ using namespace Eigen;
 
 namespace ProjectLibrary{
 
-Triangle::Triangle(const Point& pp1, const Point& pp2,const Point& pp3)
+Triangle::Triangle(const Point& pp1, const Point& pp2, const Point& pp3)
 {
     std::vector<Point> temp {pp1,pp2,pp3};
     SortLibrary::MergeSort(temp,0,2);
@@ -61,7 +61,7 @@ void Triangle::setSegment(Segment *s)
     if (hasP3 && hasP1){segs[2] = s;}
 }
 
-Point *Triangle::ThirdPoint(Segment *s)
+Point *Triangle::ThirdPoint(const Segment *s)
 {
     if (s == segs[0]) {return &p3;}
     if (s == segs[1]) {return &p1;}

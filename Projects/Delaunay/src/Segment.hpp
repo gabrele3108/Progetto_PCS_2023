@@ -37,7 +37,7 @@ class Segment
     string Show()
     {
         stringstream conc;
-        conc << "p1: " << p1.Show() << "p2: " << p2.Show() << "Il segmento connette " << c << " triangoli" << endl;
+        conc << "p1: " << p1.Show() << "p2: " << p2.Show() << "Il segmento è adiacente a" << c << " triangoli" << endl;
         return conc.str();
     }
 

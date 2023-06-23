@@ -8,7 +8,7 @@ void Segment::connectTriangle(Triangle* t){
 
 }
 
-void Segment::disconnectTriangle(Triangle* t){
+void Segment::disconnectTriangle(Triangle *t){
     if (adj1 == t) {adj1 = nullptr;c--;}
     if (adj2 == t) {adj2 = nullptr;c--;}
 }

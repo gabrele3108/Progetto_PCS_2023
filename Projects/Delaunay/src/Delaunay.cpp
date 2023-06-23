@@ -32,7 +32,7 @@ void Delaunay::maxAreaTriangle(){
     Segment *s2 = new Segment(maxT->p2,maxT->p3);
     Segment *s3 = new Segment(maxT->p3,maxT->p1);
 
-    maxT->setS1(s1);maxT->setS2(s2);maxT->setS3(s3);
+    maxT->segs[0] = s1;maxT->segs[1] = s2;maxT->segs[2] = s3;
     s1->connectTriangle(maxT);s2->connectTriangle(maxT);s3->connectTriangle(maxT);
 
     /// Aggiornamento della mesh
@@ -79,7 +79,7 @@ void Delaunay::maxAreaTriangleNSQ(){
             b++;
             b = b%hSize;
         }
-        a = (++a)%hSize;
+        a = (a+1)%hSize;
         b = (a+1)%hSize;
         c = (a+2)%hSize;
         if (a==0){t = false;}
@@ -93,7 +93,7 @@ void Delaunay::maxAreaTriangleNSQ(){
     Segment *s2 = new Segment(maxT->p2,maxT->p3);
     Segment *s3 = new Segment(maxT->p3,maxT->p1);
 
-    maxT->setS1(s1);maxT->setS2(s2);maxT->setS3(s3);
+    maxT->segs[0] = s1;maxT->segs[1] = s2;maxT->segs[2] = s3;
     s1->connectTriangle(maxT);s2->connectTriangle(maxT);s3->connectTriangle(maxT);
 
     /// Aggiornamento della mesh

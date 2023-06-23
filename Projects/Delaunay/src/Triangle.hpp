@@ -17,17 +17,14 @@ class Triangle{
 
     /// Queste funzioni servono per settare i tre segmenti. E' necessario definirle e non è possibile crearli
     /// direttamente nel costruttore perchè il costruttore dei triangoli non ha a disposizione la struttura della classe
-    /// segmento. Le funzioni setS1, setS2 e setS3 sono comode in quanto più rapide di setSegment.
+    /// segmento.
     // Snellire questa parte in futuro.
 
-    void setS1(Segment *s){segs[0] = s;}
-    void setS2(Segment *s){segs[1] = s;}
-    void setS3(Segment *s){segs[2] = s;}
     void setSegment(Segment *s);
 
     /// La seguente funzione prende in input un segmento e restituisce il terzo punto.
 
-    Point *ThirdPoint(Segment *s);
+    Point *ThirdPoint(const Segment *s);
 
     /// La seguente funzione prende in input un segmento e restituisce gli altri due.
 
