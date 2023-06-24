@@ -1,0 +1,8 @@
+C:/Users/aless/Desktop/RepProgetto/Progetto_PCS_2023/Projects/build-Delaunay-Desktop-Release/CMakeFiles/delaunay_test.dir
+C:/Users/aless/Desktop/RepProgetto/Progetto_PCS_2023/Projects/build-Delaunay-Desktop-Release/CMakeFiles/delaunay_program.dir
+C:/Users/aless/Desktop/RepProgetto/Progetto_PCS_2023/Projects/build-Delaunay-Desktop-Release/CMakeFiles/edit_cache.dir
+C:/Users/aless/Desktop/RepProgetto/Progetto_PCS_2023/Projects/build-Delaunay-Desktop-Release/CMakeFiles/rebuild_cache.dir
+C:/Users/aless/Desktop/RepProgetto/Progetto_PCS_2023/Projects/build-Delaunay-Desktop-Release/src/CMakeFiles/edit_cache.dir
+C:/Users/aless/Desktop/RepProgetto/Progetto_PCS_2023/Projects/build-Delaunay-Desktop-Release/src/CMakeFiles/rebuild_cache.dir
+C:/Users/aless/Desktop/RepProgetto/Progetto_PCS_2023/Projects/build-Delaunay-Desktop-Release/test/CMakeFiles/edit_cache.dir
+C:/Users/aless/Desktop/RepProgetto/Progetto_PCS_2023/Projects/build-Delaunay-Desktop-Release/test/CMakeFiles/rebuild_cache.dir

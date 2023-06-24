@@ -1,0 +1,17 @@
+# ninja log v5
+48	3485	7093344270981093	CMakeFiles/delaunay_program.dir/main_program.cpp.obj	ca12d76c41eece34
+54	3648	7093344272526958	CMakeFiles/delaunay_program.dir/src/Point.cpp.obj	5008cf7fbd51b10c
+76	4051	7093344276556187	CMakeFiles/delaunay_program.dir/src/Segment.cpp.obj	1b1691009b636dfa
+33	3660	7093344272856094	CMakeFiles/delaunay_test.dir/src/convexHull.cpp.obj	513e5bff0e3c42a5
+27	3884	7093344275090104	CMakeFiles/delaunay_test.dir/src/Triangle.cpp.obj	50e326744edcb703
+22	3915	7093344275359382	CMakeFiles/delaunay_test.dir/src/Point.cpp.obj	78762672fcf37dc1
+16	4167	7093344277912562	CMakeFiles/delaunay_test.dir/src/Segment.cpp.obj	45188a8a3cd853ef
+68	4360	7093344279857356	CMakeFiles/delaunay_program.dir/src/convexHull.cpp.obj	80dad44b00cf3463
+61	4580	7093344282051496	CMakeFiles/delaunay_program.dir/src/Triangle.cpp.obj	6388654f5ce885fe
+1	5551	7093344291779730	CMakeFiles/delaunay_test.dir/src/Delaunay.cpp.obj	b5aba92506c9ff4d
+41	6038	7093344296647039	CMakeFiles/delaunay_program.dir/src/Delaunay.cpp.obj	86edd8e3bd055ef9
+6039	6176	7093344297973177	delaunay_program.exe	cdf9ae89990ea314
+9	7364	7093344309901264	CMakeFiles/delaunay_test.dir/main_test.cpp.obj	8416046597e01c75
+7365	8106	7093344317296719	delaunay_test.exe	7f20cf2e410e4d4
+7365	8106	7093344317296719	delaunay_test[1]_tests.cmake	7f20cf2e410e4d4
+7365	8106	7093344317296719	C:/Users/aless/Desktop/RepProgetto/Progetto_PCS_2023/Projects/build-Delaunay-Desktop-Release/delaunay_test[1]_tests.cmake	7f20cf2e410e4d4

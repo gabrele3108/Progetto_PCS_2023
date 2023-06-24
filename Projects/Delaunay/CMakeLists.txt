@@ -73,6 +73,18 @@ add_executable(delaunay_program
 	${delaunay_SOURCES}
     ${delaunay_HEADERS})
 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Dataset/Test2.csv
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Dataset/Test1.csv
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Dataset/ProvaPoints.csv
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Dataset/ProvaSegs.csv
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/Dataset/importPointsTest.csv
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+
 target_link_libraries(delaunay_program ${delaunay_LINKED_LIBRARIES})
 target_include_directories(delaunay_program PRIVATE ${delaunay_INCLUDE})
 target_compile_options(delaunay_program PUBLIC -fPIC)
