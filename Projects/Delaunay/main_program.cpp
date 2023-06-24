@@ -3,7 +3,7 @@
 int main()
 {
   ProjectLibrary::Delaunay mainDelaunay;
-  mainDelaunay.importMesh("./Test1.csv");
+  mainDelaunay.importMesh("./Test2.csv");
   //mainDelaunay.maxAreaTriangle();
 
 

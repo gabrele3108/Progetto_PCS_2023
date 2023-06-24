@@ -13,4 +13,9 @@ void Segment::disconnectTriangle(Triangle *t){
     if (adj2 == t) {adj2 = nullptr;c--;}
 }
 
+Segment::Segment():
+    p1(Point()),
+    p2(Point())
+{}
+
 }

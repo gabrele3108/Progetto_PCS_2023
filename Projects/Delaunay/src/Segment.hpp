@@ -12,8 +12,8 @@ class Segment
     Point p1,p2;
     Triangle* adj1;
     Triangle* adj2;
-    unsigned int c = 0;
   public:
+    unsigned int c = 0;
     Segment(const Point&  pp1, const Point& pp2):
         p1(pp1),
         p2(pp2)
@@ -23,6 +23,7 @@ class Segment
             p2 = pp1;
         }
     }
+    Segment();
 
     /// Il seguente metodo connette ad un segmento un triangolo ed aggiorna il contatore di adiacenze c;
 
@@ -37,7 +38,7 @@ class Segment
     string Show()
     {
         stringstream conc;
-        conc << "p1: " << p1.Show() << "p2: " << p2.Show() << "Il segmento è adiacente a" << c << " triangoli" << endl;
+        conc << "p1: " << p1.Show() << "p2: " << p2.Show() << "Il segmento è adiacente a " << c << " triangoli" << endl;
         return conc.str();
     }
 
